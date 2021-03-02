@@ -8,13 +8,14 @@ import os
 
 
 class RNNModel():
-    def __init__(self, lookback, lookahead, input_dim, hid_dim, device, data_dir):
+    def __init__(self, lookback, lookahead, input_dim, hid_dim, device, data_dir, task):
         self.lookback = lookback
         self.lookahead = lookahead
         self.input_dim = input_dim
         self.hid_dim = hid_dim
         self.device = torch.device('cuda:0' if device == 'cuda' else 'cpu')
         self.data_dir = data_dir
+        self.task = task
 
         self.net = RNNNet(self.input_dim, self.hid_dim, self.lookahead, self.lookback).to(self.device)
 
@@ -63,7 +64,7 @@ class RNNModel():
                     torch.save({
                         'net_state_dict': self.net.state_dict(),
                         'best_epoch': best_epoch,
-                    }, os.path.join(self.data_dir, 'RNNNet.th'))
+                    }, os.path.join(self.data_dir, self.task + '.RNNNet.th'))
                 else:
                     if epoch % 50 == 0:
                         print(f'epoch {epoch:04d} loss: {loss:7.5f} no improvement for {epoch - best_epoch} epoch(es)')
@@ -71,7 +72,7 @@ class RNNModel():
                         break
     
     def eval(self, X_test):
-        checkpoint = torch.load(os.path.join(self.data_dir, 'RNNNet.th'))
+        checkpoint = torch.load(os.path.join(self.data_dir, self.task + '.RNNNet.th'))
         self.net.load_state_dict(checkpoint['net_state_dict'])
         X_test = torch.Tensor(X_test)
         self.net.eval()
@@ -82,12 +83,13 @@ class RNNModel():
 
 
 class RNNGATEModel():
-    def __init__(self, lookback, lookahead, hid_dim, device, data_dir):
+    def __init__(self, lookback, lookahead, hid_dim, device, data_dir, task):
         self.lookback = lookback
         self.lookahead = lookahead
         self.hid_dim = hid_dim
         self.device = torch.device('cuda:0' if device == 'cuda' else 'cpu')
         self.data_dir = data_dir
+        self.task = task
 
         self.net = RNNGATENet(self.lookback, self.hid_dim, self.lookahead).to(self.device)
 
@@ -136,7 +138,7 @@ class RNNGATEModel():
                     torch.save({
                         'net_state_dict': self.net.state_dict(),
                         'best_epoch': best_epoch,
-                    }, os.path.join(self.data_dir, 'RNNGATE.th'))
+                    }, os.path.join(self.data_dir, self.task + '.RNNGATE.th'))
                 else:
                     if epoch % 50 == 0:
                         print(f'epoch {epoch:04d} loss: {loss:7.5f} no improvement for {epoch - best_epoch} epoch(es)')
@@ -144,7 +146,7 @@ class RNNGATEModel():
                         break
     
     def eval(self, X_test):
-        checkpoint = torch.load(os.path.join(self.data_dir, 'RNNGATE.th'))
+        checkpoint = torch.load(os.path.join(self.data_dir, self.task + '.RNNGATE.th'))
         self.net.load_state_dict(checkpoint['net_state_dict'])
         X_test = torch.Tensor(X_test)
         self.net.eval()

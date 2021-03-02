@@ -14,9 +14,9 @@ def seed_everything(seed):
     # torch.set_deterministic(True)
 
 
-DATA_DIR = '/home/v-tyan/tsf_ideas/holiday_effect/sin_mul_5'
+DATA_DIR = '/home/v-tyan/tsf_ideas/sin_mul_5'
 
-USE_HOLIDAY = 'gate'  # no_use, feature, gate
+USE_HOLIDAY = 'feature'  # no_use, feature, gate
 
 LOOKBACK = 20
 LOOKAHEAD = 1
@@ -34,7 +34,7 @@ print(X_train.shape, X_val.shape, X_test.shape, y_train.shape, y_val.shape, y_te
 if USE_HOLIDAY == 'no_use':
     model = RNNModel(
         lookback=LOOKBACK, lookahead=LOOKAHEAD, input_dim=1, hid_dim=20, 
-        device='cuda', data_dir=DATA_DIR
+        device='cuda', data_dir=DATA_DIR, task=USE_HOLIDAY
     )
     model.fit(
         X_train=X_train[:, :, [0]], y_train=y_train, 
@@ -48,7 +48,7 @@ if USE_HOLIDAY == 'no_use':
 elif USE_HOLIDAY == 'feature':
     model = RNNModel(
         lookback=LOOKBACK, lookahead=LOOKAHEAD, input_dim=2, hid_dim=20, 
-        device='cuda', data_dir=DATA_DIR
+        device='cuda', data_dir=DATA_DIR, task=USE_HOLIDAY
     )
     model.fit(
         X_train=X_train, y_train=y_train, 
@@ -62,7 +62,7 @@ elif USE_HOLIDAY == 'feature':
 elif USE_HOLIDAY == 'gate':
     model = RNNGATEModel(
         lookback=LOOKBACK, lookahead=LOOKAHEAD, hid_dim=20, 
-        device='cuda', data_dir=DATA_DIR
+        device='cuda', data_dir=DATA_DIR, task=USE_HOLIDAY
     )
     model.fit(
         X_train=X_train, y_train=y_train, 
