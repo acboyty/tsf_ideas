@@ -14,12 +14,12 @@ def seed_everything(seed):
     # torch.set_deterministic(True)
 
 
-DATA_DIR = '/home/v-tyan/tsf_ideas/holiday_gate/sin_zero_5'
+DATA_DIR = '/home/v-tyan/tsf_ideas/holiday_effect/sin_mul_5'
 
 USE_HOLIDAY = 'gate'  # no_use, feature, gate
 
 LOOKBACK = 20
-LOOKAHEAD = 5
+LOOKAHEAD = 1
 
 SEED = 2021
 seed_everything(SEED)

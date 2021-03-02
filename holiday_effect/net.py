@@ -57,6 +57,9 @@ class RNNGATENet(nn.Module):
          
         rnn_out = self.rnn(x[:, :, [0]])
         gate = self.gate(x[:, :, 1])
+        if self.training == False:
+            torch.save(gate, './holiday_effect/gate.th')
+            torch.save(self.gate.weight, './holiday_effect/gate.weight.th')
 
         out = rnn_out * gate
         # TODO: add tanh brings some optimization problem
