@@ -14,11 +14,11 @@ def seed_everything(seed):
     # torch.set_deterministic(True)
 
 
-DATA_DIR = './data/prophet/'
+DATA_DIR = './data/sin_mul_0.1/'
 
-USE_HOLIDAY = 'gate'  # no_use, feature, gate
+USE_HOLIDAY = 'no_use'  # no_use, feature, gate
 
-LOOKBACK = 20
+LOOKBACK = 40
 LOOKAHEAD = 1
 
 SEED = 2021
@@ -26,15 +26,16 @@ seed_everything(SEED)
 
 
 X, y = data_loader(data_dir=DATA_DIR, lookback=LOOKBACK, lookahead=LOOKAHEAD)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, shuffle=False)
-X_val, X_test, y_val, y_test = train_test_split(X_test, y_test, test_size=0.6, shuffle=False)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, shuffle=False)
+X_val, X_test, y_val, y_test = train_test_split(X_test, y_test, test_size=0.5, shuffle=False)
 print(X_train.shape, X_val.shape, X_test.shape, y_train.shape, y_val.shape, y_test.shape)
+print(np.sum(np.abs(X_train[:, 1] - 1) > 1e-5), np.sum(np.abs(X_val[:, 1] - 1) > 1e-5), np.sum(np.abs(X_test[:, 1] - 1) > 1e-5))
 
 
 if USE_HOLIDAY == 'no_use':
-    X_train[:, :, [0]] = 0
-    X_val[:, :, [0]] = 0
-    X_test[:, :, [0]] = 0
+    X_train[:, :, [1]] = 0
+    X_val[:, :, [1]] = 0
+    X_test[:, :, [1]] = 0
 
     model = RNNModel(
         lookback=LOOKBACK, lookahead=LOOKAHEAD, input_dim=2, hid_dim=20, 
